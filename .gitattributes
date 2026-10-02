@@ -1,0 +1,18 @@
+node_modules/
+__pycache__/
+*.ts
+*.tsx
+*.js
+*.json
+*.md
+*.yml
+*.sql
+*.prisma
+Dockerfile
+Caddyfile
+.env.example
+.gitattributes
+.gitignore
+*.css
+*.txt
+text=auto eol=lf

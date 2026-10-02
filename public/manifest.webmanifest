@@ -1,0 +1,45 @@
+{
+  "name": "Lages Protege Animais",
+  "short_name": "LPA",
+  "description": "Plataforma municipal de proteção e bem-estar animal de Lages/SC: denúncias, resgates, adoção, perdidos e encontrados, rede comunitária e observatório.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAFAF5",
+  "theme_color": "#14532D",
+  "categories": ["government", "social", "utilities"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Denunciar",
+      "short_name": "Denunciar",
+      "description": "Registrar denúncia de maus-tratos ou abandono",
+      "url": "/denunciar"
+    },
+    {
+      "name": "Emergência",
+      "short_name": "Emergência",
+      "description": "Animal em risco agora",
+      "url": "/emergencia"
+    },
+    {
+      "name": "Meus protocolos",
+      "short_name": "Protocolos",
+      "description": "Acompanhar denúncias registradas",
+      "url": "/minha-conta/denuncias"
+    },
+    {
+      "name": "Mapa",
+      "short_name": "Mapa",
+      "description": "Mapa de ocorrências agregadas",
+      "url": "/mapa"
+    }
+  ]
+}

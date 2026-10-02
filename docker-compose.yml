@@ -1,0 +1,81 @@
+# ============================================================================
+# LAGES PROTEGE ANIMAIS — stack completa para VPS / servidor próprio
+# ============================================================================
+# Uso:
+#   1. cp .env.example .env  e preencha TODAS as variáveis
+#   2. docker compose up -d db
+#   3. npm run db:deploy
+#   4. npm run db:seed
+#   5. docker compose up -d app
+# ============================================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lpa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:-lpa}
+      # citext é exigência do schema (comparação de e-mail case-insensitive)
+      POSTGRES_INITDB_ARGS: "--locale=C.UTF-8"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lpa} -d ${POSTGRES_DB:-lpa}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    # O banco NÃO é exposto na internet. Acesse por `docker compose exec db psql`.
+    expose:
+      - "5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-lpa}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-lpa}?schema=public&connection_limit=10&pool_timeout=20
+      DIRECT_URL: postgresql://${POSTGRES_USER:-lpa}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-lpa}?schema=public
+      AUTH_SECRET: ${AUTH_SECRET:?obrigatorio - 32+ chars}
+      TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY:?obrigatorio - 32 bytes base64}
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:?obrigatorio}
+      STORAGE_DRIVER: PRIVATE
+      STORAGE_LOCAL_PATH: /data/evidencias
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - evidence-data:/data/evidencias
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  db-data:
+  evidence-data:
+  caddy-data:
+  caddy-config:

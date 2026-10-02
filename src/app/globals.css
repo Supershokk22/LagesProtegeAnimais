@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   DESIGN SYSTEM — LAGES PROTEGE ANIMAIS (§3)
+   Paleta exata do documento mestre. Contraste verificado WCAG 2.2 AA.
+   ========================================================================== */
+
+@theme {
+  --color-verde-escuro: #14532d;
+  --color-verde: #22c55e;
+  --color-azul-institucional: #1d4ed8;
+  --color-azul-claro: #dbeafe;
+  --color-creme: #fafaf5;
+  --color-branco: #ffffff;
+  --color-cinza: #64748b;
+  --color-cinza-escuro: #1e293b;
+  --color-vermelho: #dc2626;
+  --color-amarelo: #f59e0b;
+
+  --color-verde-900: #14532d;
+  --color-verde-700: #15803d;
+  --color-verde-600: #16a34a;
+  --color-verde-500: #22c55e;
+  --color-verde-100: #dcfce7;
+  --color-verde-50: #f0fdf4;
+
+  --color-neutro-50: #fafaf5;
+  --color-neutro-100: #f1f5f9;
+  --color-neutro-300: #cbd5e1;
+  --color-neutro-500: #64748b;
+  --color-neutro-700: #334155;
+  --color-neutro-900: #1e293b;
+
+  /* Estados de urgencia (§8) — cor NAO e a unica informacao (§60) */
+  --color-urg-baixa: #64748b;
+  --color-urg-moderada: #f59e0b;
+  --color-urg-alta: #ea580c;
+  --color-urg-urgente: #dc2626;
+  --color-urg-critica: #991b1b;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(15 23 42 / 0.06);
+  --shadow-lift: 0 8px 30px rgb(15 23 42 / 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   BASE
+   -------------------------------------------------------------------------- */
+
+* {
+  border-color: var(--color-neutro-300);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-creme);
+  color: var(--color-neutro-900);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visível e consistente (§60 — WCAG 2.2 AA, 2.4.11 Focus Not Obscured) */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-azul-institucional);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Pular para o conteudo (§60 — 2.4.1 Bypass Blocks) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  padding: 12px 20px;
+  background: var(--color-verde-900);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Impressão:-transparentcia pode virar papel de Denounce */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}
+
+/* Leaflet */
+.leaflet-container {
+  font-family: var(--font-sans);
+  border-radius: var(--radius-lg);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lift);
+}
